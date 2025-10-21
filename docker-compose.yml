@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # QuickNotify Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quicknotify-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=quicknotify-secret-key-2025
+      - DATABASE_URL=sqlite:///quicknotify.db
+      - INIT_USER=admin
+      - INIT_PWD=123456
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./quicknotify.db:/app/quicknotify.db
+    restart: always
+    networks:
+      - quicknotify-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: quicknotify-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    restart: always
+    networks:
+      - quicknotify-network
+
+volumes:
+  data:
+  logs:
+
+networks:
+  quicknotify-network:
+    driver: bridge
