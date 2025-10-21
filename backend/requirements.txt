@@ -1,0 +1,9 @@
+Flask
+SQLAlchemy
+cryptography
+markdown
+psutil
+Flask-Migrate
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
