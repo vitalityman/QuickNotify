@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session, send_file
 from models.models import SendRecord
+from utils.decorators import login_required
 from datetime import datetime, timedelta
 import psutil
 import os
@@ -9,13 +10,7 @@ import io
 monitor_bp = Blueprint('monitor', __name__)
 logger = logging.getLogger(__name__)
 
-def login_required(f):
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({'error': 'Not authenticated'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
+# 删除 login_required 定义
 
 @monitor_bp.route('/status', methods=['GET'])
 @login_required

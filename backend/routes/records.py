@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from models.database import db
 from models.models import SendRecord
+from utils.decorators import login_required
 from datetime import datetime, timedelta
 import json
 import logging
@@ -8,13 +9,7 @@ import logging
 records_bp = Blueprint('records', __name__)
 logger = logging.getLogger(__name__)
 
-def login_required(f):
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({'error': 'Not authenticated'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
+# 删除 login_required 定义
 
 @records_bp.route('/', methods=['GET'])
 @login_required

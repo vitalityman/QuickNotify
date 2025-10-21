@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from models.database import db
 from models.models import EmailTemplate
+from utils.decorators import login_required
 import json
 import logging
 import re
@@ -9,13 +10,7 @@ from datetime import datetime
 template_bp = Blueprint('template', __name__)
 logger = logging.getLogger(__name__)
 
-def login_required(f):
-    """Login required decorator"""
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({'error': 'Not authenticated'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
+# 删除 login_required 定义
 
 def extract_variables(text):
     """Extract variable names from template text"""

@@ -1,20 +1,21 @@
 from flask import Blueprint, request, jsonify, session
 from models.database import db
 from models.models import User
+from utils.decorators import login_required
 import os
 import logging
 
 auth_bp = Blueprint('auth', __name__)
 logger = logging.getLogger(__name__)
 
-def login_required(f):
-    """Login required decorator"""
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({'error': 'Not authenticated'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
+# 删除这段：
+# def login_required(f):
+#     """Login required decorator"""
+#     def decorated_function(*args, **kwargs):
+#         if 'user_id' not in session:
+#             return jsonify({'error': 'Not authenticated'}), 401
+#         return f(*args, **kwargs)
+#     return decorated_function
 
 @auth_bp.route('/login', methods=['POST'])
 def login():

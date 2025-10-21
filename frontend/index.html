@@ -34,17 +34,25 @@
 
         <!-- 主页面 -->
         <div id="main-page" class="page">
+            <!-- 头部在最上面 -->
             <header class="header">
                 <div class="header-content">
-                    <h1>⚡ QuickNotify</h1>
-                    <div class="user-menu">
-                        <span id="current-user">admin</span>
-                        <button id="logout-btn" class="btn btn-small">登出</button>
+                    <div class="header-left">
+                        <h1 class="header-title">⚡ QuickNotify</h1>
+                        <span class="header-subtitle">admin</span>
+                    </div>
+                    <div class="header-right">
+                        <div class="user-info">
+                            <span class="user-name" id="current-user">admin</span>
+                        </div>
+                        <button id="logout-btn" class="btn-logout">登出</button>
                     </div>
                 </div>
             </header>
 
+            <!-- 容器：侧边栏 + 主内容 -->
             <div class="container">
+                <!-- 左侧导航菜单 -->
                 <aside class="sidebar">
                     <nav class="nav-menu">
                         <a href="#" class="nav-item active" data-page="dashboard">
@@ -74,6 +82,7 @@
                     </nav>
                 </aside>
 
+                <!-- 右侧主内容 -->
                 <main class="main-content">
                     <!-- 仪表板 -->
                     <section id="dashboard-page" class="content-page active">
@@ -110,19 +119,19 @@
                         <form id="smtp-form" class="form-grid">
                             <div class="form-group">
                                 <label for="smtp-server">SMTP服务器</label>
-                                <input type="text" id="smtp-server" placeholder="smtp.example.com">
+                                <input type="text" id="smtp-server" placeholder="smtp.qq.com" required>
                             </div>
                             <div class="form-group">
                                 <label for="smtp-port">SMTP端口</label>
-                                <input type="number" id="smtp-port" placeholder="465">
+                                <input type="number" id="smtp-port" placeholder="465" required>
                             </div>
                             <div class="form-group">
                                 <label for="sender-email">发件人邮箱</label>
-                                <input type="email" id="sender-email" placeholder="noreply@example.com">
+                                <input type="email" id="sender-email" placeholder="noreply@example.com" required>
                             </div>
                             <div class="form-group">
                                 <label for="sender-password">授权码</label>
-                                <input type="password" id="sender-password" placeholder="输入授权码">
+                                <input type="password" id="sender-password" placeholder="输入授权码" required>
                             </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">💾 保存</button>
@@ -153,28 +162,112 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- 新建/编辑模板模态框 -->
+                        <div id="template-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>新建模板</h3>
+                                <form id="template-form">
+                                    <div class="form-group">
+                                        <label for="template-name">模板名称</label>
+                                        <input type="text" id="template-name" placeholder="输入模板名称" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="template-subject">邮件主题</label>
+                                        <input type="text" id="template-subject" placeholder="支持 {{variable_name}} 格式" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="template-content">邮件内容</label>
+                                        <textarea id="template-content" rows="6" placeholder="支持Markdown格式和 {{variable_name}} 变量替换" required></textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary">保存模板</button>
+                                        <button type="button" class="btn btn-secondary cancel-btn">取消</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </section>
 
                     <!-- 发送邮件 -->
                     <section id="sender-page" class="content-page">
                         <h2>发送邮件</h2>
-                        <form id="send-form" class="form-grid">
-                            <div class="form-group full-width">
-                                <label>收件人(一行一个)</label>
-                                <textarea id="send-recipients" rows="3" placeholder="user@example.com"></textarea>
+                        
+                        <!-- 发送模式选择（改进版） -->
+                        <div class="send-mode-selector">
+                            <button class="mode-btn active" data-mode="direct">
+                                <span class="mode-icon">📧</span>
+                                <span class="mode-label">直接发送</span>
+                            </button>
+                            <button class="mode-btn" data-mode="template">
+                                <span class="mode-icon">📝</span>
+                                <span class="mode-label">使用模板</span>
+                            </button>
+                        </div>
+
+                        <!-- 直接发送模式 -->
+                        <div id="direct-send-mode" class="send-mode-content active">
+                            <div class="mode-description">
+                                <p>直接输入收件人、主题和内容，立即发送邮件</p>
                             </div>
-                            <div class="form-group full-width">
-                                <label>邮件主题</label>
-                                <input type="text" id="send-subject" placeholder="输入主题">
+                            <form id="send-form" class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="send-recipients">收件人(一行一个)</label>
+                                    <textarea id="send-recipients" rows="3" placeholder="user1@example.com&#10;user2@example.com" required></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="send-subject">邮件主题</label>
+                                    <input type="text" id="send-subject" placeholder="输入主题" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="send-content">邮件内容</label>
+                                    <textarea id="send-content" rows="8" placeholder="支持Markdown格式" required></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">📧 发送</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 使用模板发送模式 -->
+                        <div id="template-send-mode" class="send-mode-content">
+                            <div class="mode-description">
+                                <p>选择预设模板，快速发送邮件。支持变量替换，灵活应对不同场景</p>
                             </div>
-                            <div class="form-group full-width">
-                                <label>邮件内容</label>
-                                <textarea id="send-content" rows="8" placeholder="支持Markdown格式"></textarea>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">📧 发送</button>
-                            </div>
-                        </form>
+                            <form id="send-template-form" class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="template-select">选择模板 <span class="required">*</span></label>
+                                    <select id="template-select" required>
+                                        <option value="">-- 请选择模板 --</option>
+                                    </select>
+                                </div>
+
+                                <!-- 模板预览卡片 -->
+                                <div class="form-group full-width">
+                                    <label>模板预览</label>
+                                    <div id="template-preview" class="template-preview">
+                                        <p class="text-muted">选择模板后显示预览</p>
+                                    </div>
+                                </div>
+
+                                <!-- 模板变量输入 -->
+                                <div id="template-variables" class="template-variables">
+                                    <!-- 动态生成的变量输入框 -->
+                                </div>
+
+                                <!-- 收件人输入 -->
+                                <div class="form-group full-width">
+                                    <label for="template-recipients">收件人(一行一个) <span class="required">*</span></label>
+                                    <textarea id="template-recipients" rows="3" placeholder="user1@example.com&#10;user2@example.com" required></textarea>
+                                </div>
+
+                                <!-- 提交按钮 -->
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">📧 发送邮件</button>
+                                </div>
+                            </form>
+                        </div>
                     </section>
 
                     <!-- 发送记录 -->
@@ -243,7 +336,9 @@
         </div>
     </div>
 
+    <!-- 通知提示 -->
     <div id="notification" class="notification"></div>
+
     <script src="/js/api.js"></script>
     <script src="/js/utils.js"></script>
     <script src="/js/main.js"></script>
